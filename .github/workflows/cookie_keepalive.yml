@@ -1,0 +1,31 @@
+name: 多账号Cookie保活签到
+on:
+  schedule:
+    # 每天凌晨2点执行，按需修改 cron
+    - cron: '0 2 * * *'
+  workflow_dispatch: # 支持手动触发
+
+jobs:
+  keepalive_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 安装依赖与浏览器
+        run: |
+          npm install
+          npx playwright install chromium
+          npx playwright install-deps chromium
+
+      - name: 执行保活签到脚本
+        run: node keepalive.js
+        env:
+          COOKIE_B64_1: ${{ secrets.COOKIE_B64_1 }}
+          COOKIE_B64_2: ${{ secrets.COOKIE_B64_2 }}
+          COOKIE_B64_3: ${{ secrets.COOKIE_B64_3 }}
