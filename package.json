@@ -1,0 +1,7 @@
+{
+  "name": "multi-account-cookie-keepalive",
+  "version": "1.0.0",
+  "dependencies": {
+    "playwright": "^1.45.0"
+  }
+}
