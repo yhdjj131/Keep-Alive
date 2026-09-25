@@ -12,6 +12,12 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
 
+      - name: 设置系统时区为 Asia/Shanghai (UTC+8 北京时间)
+        run: |
+          sudo timedatectl set-timezone Asia/Shanghai
+          echo "TZ=Asia/Shanghai" >> $GITHUB_ENV
+          date
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
