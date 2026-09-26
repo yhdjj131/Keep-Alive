@@ -1,37 +1,48 @@
-name: 多账号Cookie保活签到
+name: Cookie会话保活
+
 on:
   schedule:
-    # 每天凌晨2点执行，按需修改 cron
     - cron: '0 2 * * *'
-  workflow_dispatch: # 支持手动触发
+      timezone: 'Asia/Shanghai'
+  workflow_dispatch:
 
 jobs:
   keepalive_job:
     runs-on: ubuntu-latest
+
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
 
-      - name: 设置系统时区为 Asia/Shanghai (UTC+8 北京时间)
+      - name: 设置时区 Asia/Shanghai
         run: |
           sudo timedatectl set-timezone Asia/Shanghai
           echo "TZ=Asia/Shanghai" >> $GITHUB_ENV
           date
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          node-version: 20
+          python-version: "3.12"
 
-      - name: 安装依赖与浏览器
+      - name: 安装 Python 依赖
         run: |
-          npm install
-          npx playwright install chromium
-          npx playwright install-deps chromium
+          python -m pip install --upgrade pip
+          pip install cryptography playwright
 
-      - name: 执行保活签到脚本
-        run: node keepalive.js
+      - name: 安装 Chromium
+        run: |
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: 执行保活任务
+        run: python keepalive.py
         env:
-          COOKIE_B64_1: ${{ secrets.COOKIE_B64_1 }}
-          COOKIE_B64_2: ${{ secrets.COOKIE_B64_2 }}
-          COOKIE_B64_3: ${{ secrets.COOKIE_B64_3 }}
+          COOKIE_FERNET_KEY: ${{ secrets.COOKIE_FERNET_KEY }}
+
+      - name: 输出任务摘要
+        if: always()
+        run: |
+          if [ -f "$GITHUB_STEP_SUMMARY" ]; then
+            cat "$GITHUB_STEP_SUMMARY"
+          fi
