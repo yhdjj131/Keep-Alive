@@ -1,5 +1,7 @@
 import json
 import os
+import random
+import time
 from cryptography.fernet import Fernet, InvalidToken
 from playwright.sync_api import sync_playwright
 
@@ -13,6 +15,11 @@ def write_summary(content: str):
 
 
 def main():
+    # 定时触发后，随机等待 0 ~ 7 分钟（0‑420秒）
+    wait_sec = random.randint(0, 420)
+    print(f"任务启动，随机等待 {wait_sec} 秒后开始执行")
+    time.sleep(wait_sec)
+
     fernet_key_b64 = os.environ.get("COOKIE_FERNET_KEY")
 
     if not fernet_key_b64:
