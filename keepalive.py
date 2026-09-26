@@ -4,6 +4,7 @@ from cryptography.fernet import Fernet, InvalidToken
 from playwright.sync_api import sync_playwright
 
 SUMMARY_PATH = os.environ.get("GITHUB_STEP_SUMMARY", "/tmp/summary.md")
+CONFIG_FILENAME = "action_config_output.json"
 
 
 def write_summary(content: str):
@@ -19,12 +20,12 @@ def main():
         write_summary("# 任务失败\n- 缺少 Secret：COOKIE_FERNET_KEY")
         exit(1)
 
-    if not os.path.exists("config.json"):
-        print("错误：缺少 config.json")
-        write_summary("# 任务失败\n- 缺少 config.json")
+    if not os.path.exists(CONFIG_FILENAME):
+        print(f"错误：缺少 {CONFIG_FILENAME}")
+        write_summary(f"# 任务失败\n- 缺少配置文件：{CONFIG_FILENAME}")
         exit(1)
 
-    with open("config.json", "r", encoding="utf-8") as f:
+    with open(CONFIG_FILENAME, "r", encoding="utf-8") as f:
         cfg = json.load(f)
 
     global_cfg = cfg.get("global", {})
