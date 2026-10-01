@@ -55,6 +55,8 @@ git commit -m "update keepalive config"
 git push
 ```
 
+>你也可以手动上传文件或者手动写入文件。
+
 ### 3. 配置 GitHub Secret（只需一次）
 
 仓库页面 → **Settings → Secrets and variables → Actions → New repository secret**：
