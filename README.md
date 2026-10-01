@@ -8,6 +8,32 @@
 2. `COOKIE_FERNET_KEY`（GitHub Secret）：导出时打印的 Fernet 密钥，用于解密上述密文
 3. `keepalive.py`：解密每个站点的 Cookie → 用 Playwright 无头浏览器打开 `https://{site}` → 检测页面是否出现「请登录」关键词，判断该站点会话是否失效 → 输出任务摘要
 
+## 其他用户 Fork 使用
+
+本仓库为**公开仓库**，任何人均可点击右上角 **Fork** 复制一份到自己账号下使用。Fork 后按以下 5 步配置：
+
+1. **替换保活配置**：fork 仓库里的 `action_config_output.json` 是原作者站点的密文，**必须替换成你自己的**——在 CookieLuncher 中「导出 Cookie」后用新文件覆盖并推送：
+
+   ```bash
+   git pull
+   # 用导出的 action_config_output.json 覆盖仓库内同名文件
+   git add action_config_output.json
+   git commit -m "update my keepalive config"
+   git push
+   ```
+
+2. **配置 Secret（必须，fork 不继承）**：仓库页面 → **Settings → Secrets and variables → Actions → New repository secret**：
+   - Name：`COOKIE_FERNET_KEY`
+   - Value：粘贴你导出时打印的 Fernet 密钥
+
+3. **启用定时任务（fork 后默认禁用）**：GitHub 规定「公开仓库被 fork 后，定时工作流默认禁用」。请到 **Actions** 页面 → 「Cookie会话保活」→ **Enable workflows**（或点击该工作流详情页的启用按钮）。启用后自动按 **每周二、四、六 北京时间 12:00** 运行。
+
+4. **手动触发验证**：Actions → Cookie会话保活 → **Run workflow**，等任务跑完查看 Summary，确认你配置的站点保活成功后，再等待定时触发。
+
+5. **（可选）调整自动任务时间**：编辑 `.github/workflows/cookie_keepalive.yml` 中的 `cron` 表达式（时区 `Asia/Shanghai`），例如改为每天运行：`'0 4 * * *'`（每天北京时间 04:00）。
+
+> 提示：公开仓库若 **60 天无任何活动**，GitHub 也会自动禁用定时工作流；遇到任务不跑时，到 Actions 页面重新启用即可。
+
 ## 使用方法
 
 ### 1. 从 CookieLuncher 导出配置
