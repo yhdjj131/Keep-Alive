@@ -1,9 +1,9 @@
 name: Cookie会话保活
 
 #on:
- # schedule:
- #   - cron: '0 12 * * 2,4,6'
- #     timezone: 'Asia/Shanghai'
+#  schedule:
+#    - cron: '0 12 * * 2,4,6'
+#      timezone: 'Asia/Shanghai'
  on:
    workflow_dispatch:
 
