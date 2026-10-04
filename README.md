@@ -68,7 +68,7 @@ git push
 
 > 没有这个 Secret，保活任务会立即失败（脚本会报「缺少 COOKIE_FERNET_KEY」）。
 
-### 4. 自动任务时间（已配置，无需操作）
+### 4. 自动任务时间（已配置，第一次fork后请取消注释以生效）
 
 本仓库已内置定时任务（`.github/workflows/cookie_keepalive.yml`）：
 
